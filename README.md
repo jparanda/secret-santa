@@ -33,8 +33,12 @@ git clone repo_path
 mvn clean package
 ```
 
-* The above command will create a jar artifact named `secret-santa-0.0.1-SNAPSHOT.jar` so this is the service packaged 
-with all necessary to run. Execute the following command to up and run the service:
+* The above command will create a jar artifact named `secret-santa-0.0.1-SNAPSHOT.jar` so this is the service packaged
+  with all necessary to run.
+
+## Usage
+
+Execute the following command to up and run the service:
 
 ```
 java -jar secret-santa-0.0.1-SNAPSHOT.jar
@@ -47,9 +51,11 @@ http://localhost:8080/actuator/health
 ```
 
 The endpoint to use this service is:
+
 ```
 POST http://localhost:8080/api/v1/secret-santa/assign
 ```
+
 This service need a JSON payload like this
 
 ```
@@ -59,17 +65,16 @@ This service need a JSON payload like this
 "pastAssignments": []
 }
 ```
+
 NOTE: Check the open API documentation review the API contract.
 
 ```
 http://localhost:8080/swagger-ui/index.html
 ```
 
-## Usage
-
 The following is a JSON request example for this service
 
-```yaml
+```json
 {
 "participants": [
 {"name": "Alice"},
@@ -118,3 +123,8 @@ The following is a JSON request example for this service
 }
 ```
 
+If you are confortable with docker container we can install it locally and use the following bash scripts to run the secret santa service
+
+* Execute the file named `createSecretSantaDockerImage.sh` to create the docker image.
+* Execute the file named `runSecretSantaService.sh` to run the images as a container.
+* Important, probably you need give permission to execute these script `chmod +x file_name.sh`
