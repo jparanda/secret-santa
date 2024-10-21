@@ -20,11 +20,11 @@ family excluded from the Secret Santa.
 
 As this service is using maven, in order to be ready to up and running this service we need to do the following
 
-
-* Download the project from git repository git@github.com:jparanda/secret-santa.git , for this use the command:
+* You can fork the repository to add this into your own repo.
+* Download the project from git using the git clone command:
 
 ```
-git clone git@github.com:jparanda/secret-santa.git
+git clone repo_path
 ```
 
 * Execute the following maven command to create the java artifact:
@@ -42,6 +42,9 @@ java -jar secret-santa-0.0.1-SNAPSHOT.jar
 
 * You can check if ths service is up and running check the health endpoint using the following endpoint:
 
+```
+http://localhost:8080/actuator/health
+```
 
 The endpoint to use this service is:
 ```
@@ -66,4 +69,52 @@ http://localhost:8080/swagger-ui/index.html
 
 The following is a JSON request example for this service
 
+```yaml
+{
+"participants": [
+{"name": "Alice"},
+{"name": "Bob"},
+{"name": "Charlie"},
+{"name": "David"},
+{"name": "Eve"},
+{"name": "Frank"}
+],
+"familyRestrictions": [
+{
+"person": "Alice",
+"immediateFamilyMembers": ["Bob", "Charlie"]
+},
+{
+"person": "Bob",
+"immediateFamilyMembers": ["Alice", "Charlie"]
+},
+{
+"person": "Charlie",
+"immediateFamilyMembers": ["Bob", "Alice"]
+},
+{
+"person": "David",
+"immediateFamilyMembers": ["Eve", "Frank"]
+},
+{
+"person": "Eve",
+"immediateFamilyMembers": ["David", "Frank"]
+},
+{
+"person": "Frank",
+"immediateFamilyMembers": ["Eve", "David"]
+}
+],
+"pastAssignments": {
+"2021":{
+"Bob": "David",
+"Eve": "Alice",
+"Alice": "Frank",
+"Charlie": "Eve",
+"David": "Bob",
+"Frank": "Charlie"
+}
+}
+}
+```
 
