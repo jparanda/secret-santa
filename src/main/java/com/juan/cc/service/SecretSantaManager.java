@@ -8,11 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class SecretSantaManager implements SecretSantaService {
@@ -39,16 +36,15 @@ public class SecretSantaManager implements SecretSantaService {
      * to handle these data easier
      */
     private Map<Person, List<Person>> convertFamilyRestrictions(List<FamilyRestriction> restrictions) {
-        Map<Person, List<Person>> familyMap = new HashMap<>();
-        for (FamilyRestriction restriction : restrictions) {
-            List<Person> familyMembers = new ArrayList<>();
-            for (String memberName : restriction.getImmediateFamilyMembers()) {
-                familyMembers.add(new Person(memberName));
-            }
-            familyMap.put(new Person(restriction.getPerson()), familyMembers);
-        }
-        return familyMap;
+        return restrictions.parallelStream() // Use parallel stream for potential performance improvement
+                .collect(Collectors.toMap(
+                        restriction -> new Person(restriction.getPerson()),
+                        restriction -> restriction.getImmediateFamilyMembers().parallelStream() // Also parallelize family member processing
+                                .map(Person::new)
+                                .collect(Collectors.toList())
+                ));
     }
+
 
     /**
      * This method convert past assignments restriction list to Map
@@ -78,7 +74,7 @@ public class SecretSantaManager implements SecretSantaService {
             List<Person> invalidReceivers = new ArrayList<>(familyMap.getOrDefault(santa, new ArrayList<>()));
             invalidReceivers.add(santa);
 
-            if(!previousAssignments.isEmpty()) {
+            if (!previousAssignments.isEmpty()) {
                 List<Person> pastReceivers = previousAssignments.getOrDefault(santa, new ArrayList<>())
                         .stream()
                         .limit(3)
@@ -91,7 +87,7 @@ public class SecretSantaManager implements SecretSantaService {
 
             if (validReceivers.isEmpty()) {
                 throw new NoValidReceiverException(String.format("No valid receivers available for [%s] invalid receivers [%s] " +
-                                "and total participants [%s]", santa.getName(), invalidReceivers.size(), receiversPool.size()));
+                        "and total participants [%s]", santa.getName(), invalidReceivers.size(), receiversPool.size()));
             }
 
             Person receiver = validReceivers.get(random.nextInt(validReceivers.size()));
