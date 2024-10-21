@@ -90,7 +90,8 @@ public class SecretSantaManager implements SecretSantaService {
             validReceivers.removeAll(invalidReceivers);
 
             if (validReceivers.isEmpty()) {
-                throw new NoValidReceiverException(String.format("No valid receivers available for %s", santa.getName()));
+                throw new NoValidReceiverException(String.format("No valid receivers available for [%s] invalid receivers [%s] " +
+                                "and total participants [%s]", santa.getName(), invalidReceivers.size(), receiversPool.size()));
             }
 
             Person receiver = validReceivers.get(random.nextInt(validReceivers.size()));

@@ -1,6 +1,9 @@
 package com.juan.cc.controller;
 
 import com.juan.cc.service.SecretSantaService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +25,11 @@ public class SecretSantaController {
         this.secretSantaService = secretSantaService;
     }
 
+    @Operation(summary = "Assign Secret Santa", description = "Assigns Secret Santa for participants")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Assignment successful"),
+            @ApiResponse(responseCode = "400", description = "Invalid input"),
+            @ApiResponse(responseCode = "500", description = "Server error")})
     @PostMapping("/assign")
     public Map<String, String> assignSecretSanta(@RequestBody SecretSantaConfigRequest secretSantaConfigRequest) {
         return secretSantaService.assignSecretSanta(secretSantaConfigRequest);
